@@ -26,22 +26,20 @@ def hello_world():
 @app.route('/channel-picture', methods=['GET'])
 @cache.cached(timeout=2592000, query_string=True)
 def channel_picture():
-  # Get the channel ID from the URL query string
-  channel_id = request.args.get('channel_id')
+    # Get the channel ID from the URL query string
+    channel_id = request.args.get('channel_id')
 
-  # Use the YouTube API to get the channel's picture profile URL
-  url = f'https://www.googleapis.com/youtube/v3/channels?part=snippet&id={channel_id}&key={API_KEY}'
-  response = requests.get(url)
-  print(response.json())
+    # Use the YouTube API to get the channel's picture profile URL
+    url = f'https://www.googleapis.com/youtube/v3/channels?part=snippet&id={channel_id}&key={API_KEY}'
+    response = requests.get(url)
+    print(response.json())
 
-  data = response.json()
+    data = response.json()
 
-  # Extract the picture profile URL from the API response
-  if "items" in data:
+    if "items" not in data:
+        return jsonify({ 'picture_url': "https://ytrecap.com/defaultpp.png" })
     picture_url = data['items'][0]['snippet']['thumbnails']['high']['url']
     return jsonify({ 'picture_url': picture_url })
-  else :
-    return jsonify({ 'picture_url': "https://ytrecap.com/defaultpp.png" })
 
   # TODO
   # in python app if id start with @ use search :
